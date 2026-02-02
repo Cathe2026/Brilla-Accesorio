@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brilla Accesorios</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        header { background-color: #ff69b4; color: white; text-align: center; padding: 20px; }
+        .productos { display: flex; flex-wrap: wrap; justify-content: center; padding: 20px; }
+        .producto { background: white; margin: 10px; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 250px; text-align: center; }
+        .producto img { width: 100%; height: 200px; object-fit: cover; border-radius: 5px; }
+        button { background-color: #ff69b4; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; }
+        button:hover { background-color: #ff1493; }
+        #carrito { position: fixed; top: 10px; right: 10px; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 300px; }
+        #carrito-lista { list-style: none; padding: 0; }
+        #carrito-lista li { margin: 5px 0; }
+        #total { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Brilla Accesorios</h1>
+        <p>¡Descubre nuestros accesorios únicos!</p>
+    </header>
+
+    <div class="productos" id="productos"></div>
+
+    <div id="carrito">
+        <h3>Carrito de Compras</h3>
+        <ul id="carrito-lista"></ul>
+        <p id="total">Total: $0</p>
+        <button id="finalizar">Finalizar Compra</button>
+    </div>
+
+    <script>
+        // Lista de productos con tus datos
+        const productos = [
+            // Anillos $50
+            { id: 1, nombre: "Anillo 1", precio: 50, imagen: "https://i.ibb.co/VYmd7FBb/anillo1.jpg" },
+            { id: 2, nombre: "Anillo 1 (Variante)", precio: 50, imagen: "https://i.ibb.co/d4gSdNKX/anillo1.jpg" },
+            { id: 3, nombre: "Anillos 3", precio: 50, imagen: "https://i.ibb.co/xS8cXh8k/anillos3.jpg" },
+            { id: 4, nombre: "Anillos 4", precio: 50, imagen: "https://i.ibb.co/mCh9D3zw/anillos4.jpg" },
+            // Aros $60
+            { id: 5, nombre: "Aros 1", precio: 60, imagen: "https://i.ibb.co/LqftpdG/aros1.jpg" },
+            { id: 6, nombre: "Aros 2", precio: 60, imagen: "https://i.ibb.co/CZGYmcb/aros2.jpg" },
+            { id: 7, nombre: "Aros 3", precio: 60, imagen: "https://i.ibb.co/rGNFjQ8p/aros3.jpg" },
+            { id: 8, nombre: "Aros 4", precio: 60, imagen: "https://i.ibb.co/jPhZNj8Z/aros4.jpg" },
+            { id: 9, nombre: "Aros 5", precio: 60, imagen: "https://i.ibb.co/k22FPg0V/aros5.jpg" },
+            { id: 10, nombre: "Aros 6", precio: 60, imagen: "https://i.ibb.co/QvgzJ32Y/aros6.jpg" },
+            { id: 11, nombre: "Aros 7", precio: 60, imagen: "https://i.ibb.co/qYdF7Qmf/aros7.jpg" },
+            { id: 12, nombre: "Aros 8", precio: 60, imagen: "https://i.ibb.co/jkkfSKg1/aros8.jpg" },
+            // Cadena/Collares $60
+            { id: 13, nombre: "Cadena 1", precio: 60, imagen: "https://i.ibb.co/H146kWZ/cadena1.jpg" },
+            { id: 14, nombre: "Collar 1", precio: 60, imagen: "https://i.ibb.co/20MKqDjz/collar.jpg" },
+            { id: 15, nombre: "Collar 2", precio: 60, imagen: "https://i.ibb.co/VW6GHbk8/collar2.jpg" },
+            { id: 16, nombre: "Collar 3", precio: 60, imagen: "https://i.ibb.co/7dKGxZwT/collar3.jpg" },
+            { id: 17, nombre: "Collar 4", precio: 60, imagen: "https://i.ibb.co/d0XzF979/collar4.jpg" },
+            { id: 18, nombre: "Collar 5", precio: 60, imagen: "https://i.ibb.co/TMsKMDxx/collar5.jpg" },
+            { id: 19, nombre: "Collar 6", precio: 60, imagen: "https://i.ibb.co/99ncS9SY/collar6.jpg" },
+            { id: 20, nombre: "Collar 7", precio: 60, imagen: "https://i.ibb.co/nNMJ2pcx/collar7.jpg" },
+            { id: 21, nombre: "Collar 9", precio: 60, imagen: "https://i.ibb.co/VdnRqzn/collar9.jpg" },
+            // Conjuntos $120
+            { id: 22, nombre: "Conjunto 1", precio: 120, imagen: "https://i.ibb.co/XZ5Qywsz/conjunto.jpg" },
+            { id: 23, nombre: "Conjunto 2", precio: 120, imagen: "https://i.ibb.co/hRw5pXg7/conjunto2.jpg" },
+            { id: 24, nombre: "Conjunto 3", precio: 120, imagen: "https://i.ibb.co/21QyFy39/conjunto3.jpg" },
+            // Pinza con luz $100
+            { id: 25, nombre: "Pinza con Luz", precio: 100, imagen: "https://i.ibb.co/QFxNmDM7/pinza.jpg" },
+            // Pinza de pelo $15
+            { id: 26, nombre: "Pinza de Pelo", precio: 15, imagen: "https://i.ibb.co/Cpk4YMdQ/pinzas.jpg" },
+            // Pulseras $60
+            { id: 27, nombre: "Pulsera 1", precio: 60, imagen: "https://i.ibb.co/5VGwsyM/pulsera.jpg" },
+            { id: 28, nombre: "Pulsera 2", precio: 60, imagen: "https://i.ibb.co/v6hPP4ZW/pulsera2.jpg" },
+            { id: 29, nombre: "Pulsera 3", precio: 60, imagen: "https://i.ibb.co/27fP30fW/pulsera3.jpg" },
+            { id: 30, nombre: "Pulsera 5", precio: 60, imagen: "https://i.ibb.co/4RYVRkdr/pulsera5.jpg" },
+            // Reloj Conjunto $150
+            { id: 31, nombre: "Reloj 1", precio: 150, imagen: "https://i.ibb.co/23qFsqDN/reloj.jpg" },
+            { id: 32, nombre: "Reloj 2", precio: 150, imagen: "https://i.ibb.co/Xf57Ck8h/reloj2.jpg" },
+            { id: 33, nombre: "Reloj 3", precio: 150, imagen: "https://i.ibb.co/VWhPJ14K/reloj3.jpg" },
+            { id: 34, nombre: "Reloj 5", precio: 150, imagen: "https://i.ibb.co/Y4Zh0sN9/reloj5.jpg" },
+            { id: 35, nombre: "Reloj 6", precio: 150, imagen: "https://i.ibb.co/35b27PjN/reloj6.jpg" },
+            { id: 36, nombre: "Reloj 7", precio: 150, imagen: "https://i.ibb.co/1YWjHjBj/reloj7.jpg" },
+            { id: 37, nombre: "Reloj 8", precio: 150, imagen: "https://i.ibb.co/C53SpHk7/reloj8.jpg" },
+            { id: 38, nombre: "Reloj 10", precio: 150, imagen: "https://i.ibb.co/kV0ZfBN8/reloj10.jpg" },
+            { id: 39, nombre: "Reloj 11", precio: 150, imagen: "https://i.ibb.co/V0bKVPyF/reloj11.jpg" },
+            { id: 40, nombre: "Reloj 12", precio: 150, imagen: "https://i.ibb.co/0RrhX1zR/reloj12.jpg" },
+            // Uñas $90
+            { id: 41, nombre: "Uñas", precio: 90, imagen: "https://i.ibb.co/prk543DH/u-as.jpg" },
+            // Villetera $100
+            { id: 42, nombre: "Villetera", precio: 100, imagen: "https://i.ibb.co/xtxf6q6m/villetera.jpg" }
+        ];
+
+        const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        const productosDiv = document.getElementById('productos');
+        const carritoLista = document.getElementById('carrito-lista');
+        const totalDiv = document.getElementById('total');
+        const finalizarBtn = document.getElementById('finalizar');
+
+        // Renderizar productos
+        productos.forEach(producto => {
+            const div = document.createElement('div');
+            div.className = 'producto';
+            div.innerHTML = `
+                <img src="${producto.imagen}" alt="${producto.nombre}">
+                <h3>${producto.nombre}</h3>
+                <p>Precio: $${producto.precio}</p>
+                <button onclick="agregarAlCarrito(${producto.id})">Agregar al Carrito</button>
+            `;
+            productosDiv.appendChild(div);
+        });
+
+        // Función para agregar al carrito
+        function agregarAlCarrito(id) {
+            const producto = productos.find(p => p.id === id);
+            carrito.push(producto);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            actualizarCarrito();
+        }
+
+        // Actualizar carrito
+        function actualizarCarrito() {
+            carritoLista.innerHTML = '';
+            let total = 0;
+            carrito.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.nombre} - $${item.precio}`;
+                carritoLista.appendChild(li);
+                total += item.precio;
+            });
+            totalDiv.textContent = `Total: $${total}`;
+        }
+
+        // Inicializar carrito
+        actualizarCarrito();
+
+        // Finalizar compra y enviar a WhatsApp
+        finalizarBtn.addEventListener('click', () => {
+            if (carrito.length === 0) {
+                alert('El carrito está vacío.');
+                return;
+            }
+            let mensaje = 'Hola, quiero comprar estos accesorios:\n';
+            carrito.forEach(item => {
+                mensaje += `- ${item.nombre}: $${item.precio}\n`;
+            });
+            mensaje += `Total: $${carrito.reduce((sum, item) => sum + item.precio, 0)}\n¿Podemos coordinar el pago y envío?`;
+            
+            // Tu número de WhatsApp
+            const numeroWhatsApp = '+598098501763';
+            const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+        });
+    </script>
+</body>
+</html>
