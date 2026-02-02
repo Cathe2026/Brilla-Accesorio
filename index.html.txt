@@ -146,10 +146,11 @@
             mensaje += `Total: $${carrito.reduce((sum, item) => sum + item.precio, 0)}\n¿Podemos coordinar el pago y envío?`;
             
             // Tu número de WhatsApp
-            const numeroWhatsApp = '+598098501763';
+            const numeroWhatsApp = '+598098501726';
             const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
         });
     </script>
 </body>
 </html>
+
